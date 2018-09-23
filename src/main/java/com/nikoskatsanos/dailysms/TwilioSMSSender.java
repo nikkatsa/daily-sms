@@ -54,7 +54,7 @@ public class TwilioSMSSender implements SMSSender {
             log.info("Twilio message sent %s", twilioMessage.toString());
         } catch (final Exception e) {
             log.error(e.getMessage(), e);
-            throw new SMSException("Failed to send Twilio SMS message");
+            throw new SMSException("Failed to send Twilio SMS message", e);
         }
     }
 }
