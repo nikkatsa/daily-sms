@@ -1,0 +1,5 @@
+dailySMS:
+  Recipients: nikos,george,tom
+  SMSPrefix: Hello there,
+  SMSFreeText: Hello World!
+  ScheduleCRONExpression: "0 * * ? * ?"
