@@ -6,7 +6,7 @@
 
     <groupId>com.nikoskatsanos</groupId>
     <artifactId>daily-sms</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>daily-sms</name>
     <url>http://www.nikoskatsanos.com</url>
