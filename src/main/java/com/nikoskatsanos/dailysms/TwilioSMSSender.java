@@ -26,7 +26,7 @@ public class TwilioSMSSender implements SMSSender {
     @Value("${twilio.AuthToken}")
     private String twilioAuthToken;
 
-    @Value("${twilio.PhoneNumber")
+    @Value("${twilio.PhoneNumber}")
     private String twilioPhoneNumber;
 
     private volatile PhoneNumber fromTwilioPhoneNumber;
