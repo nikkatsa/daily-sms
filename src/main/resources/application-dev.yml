@@ -2,4 +2,6 @@ dailySMS:
   Recipients: nikos,george,tom
   SMSPrefix: Hello there,
   SMSFreeText: Hello World!
-  ScheduleCRONExpression: "0 * * ? * ?"
+  ScheduleCRONExpression: "* * * ? * ?"
+  DayOfMonthDay: 6
+  DayOfMonthText: Today is 6th

@@ -59,7 +59,7 @@ public interface SMSSource {
      * <p>A {@link SMSSource} that returns free text</p>
      */
     @Component
-    @Order(value = 4)
+    @Order(value = 5)
     public class FreeTextSMSSource implements SMSSource {
 
         @Value("${dailySMS.SMSFreeText}")
@@ -72,11 +72,13 @@ public interface SMSSource {
     }
 
     /**
-     * <p>A {@link SMSSource} that connects to web service at <a href="https://geek-jokes.sameerkumar.website/api">https://geek-jokes.sameerkumar.website/api</a> and returns a geeky joke</p>
+     * <p>A {@link SMSSource} that connects to web service at <a href="https://geek-jokes.sameerkumar.website/api">https://geek-jokes.sameerkumar.website/api</a> and returns a
+     * geeky joke</p>
      */
     @Component
-    @Order(value = 3)
+    @Order(value = 4)
     public class GeekJokeSMSSource implements SMSSource {
+
         private static final String GEEK_JOKE_URL = "https://geek-jokes.sameerkumar.website/api";
         private static final String NO_GEEK_JOKE_TODAY = "No geek joke for today :(";
 
@@ -96,6 +98,28 @@ public interface SMSSource {
         @Override
         public String getText() {
             return this.retrieveGeekJoke();
+        }
+    }
+
+    /**
+     * <p>A source that returns a {@link DayOfMonthSMSSource#getText()} only if the {@code dayOfMonth} is today's date</p>
+     */
+    @Component
+    @Order(value = 3)
+    public class DayOfMonthSMSSource implements SMSSource {
+
+        private final int dayOfMonth;
+
+        private final String text;
+
+        public DayOfMonthSMSSource(@Autowired @Value("${dailySMS.DayOfMonthDay}") int dayOfMonth, @Value("${dailySMS.DayOfMonthText}") String text) {
+            this.dayOfMonth = dayOfMonth;
+            this.text = text;
+        }
+
+        @Override
+        public String getText() {
+            return this.dayOfMonth == LocalDate.now().getDayOfMonth() ? this.text : null;
         }
     }
 }

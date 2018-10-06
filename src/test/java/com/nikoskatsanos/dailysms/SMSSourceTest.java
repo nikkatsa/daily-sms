@@ -1,5 +1,6 @@
 package com.nikoskatsanos.dailysms;
 
+import com.nikoskatsanos.dailysms.SMSSource.DayOfMonthSMSSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,23 +23,25 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @Suite.SuiteClasses({
-        SMSSourceTest.PrefixedSMSSourceTest.class,
-        SMSSourceTest.DayOfWeekSMSSourceTest.class,
-        SMSSourceTest.FreeTextSourceSTest.class,
+    SMSSourceTest.PrefixedSMSSourceTest.class,
+    SMSSourceTest.DayOfWeekSMSSourceTest.class,
+    SMSSourceTest.FreeTextSourceSTest.class,
 })
 @RunWith(Suite.class)
 public class SMSSourceTest {
 
     @Component
     @ComponentScan(
-            basePackageClasses = {SMSSource.class},
-            useDefaultFilters = false,
-            includeFilters = {
-                    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = SMSSource.class)
-            })
+        basePackageClasses = {SMSSource.class},
+        useDefaultFilters = false,
+        includeFilters = {
+            @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = SMSSource.class)
+        })
     public static class SMSSourceTestConfig {
+
         @Bean
         public RestTemplate restTemplate() {
             return Mockito.mock(RestTemplate.class);
@@ -72,6 +75,7 @@ public class SMSSourceTest {
     @TestPropertySource(locations = {"classpath:/application-test.properties"})
     @ActiveProfiles("test")
     public static class DayOfWeekSMSSourceTest {
+
         @Autowired
         private ApplicationContext applicationContext;
 
@@ -93,6 +97,7 @@ public class SMSSourceTest {
     @TestPropertySource(locations = {"classpath:/application-test.properties"})
     @ActiveProfiles("test")
     public static class FreeTextSourceSTest {
+
         @Autowired
         private ApplicationContext applicationContext;
 
@@ -114,6 +119,7 @@ public class SMSSourceTest {
     @TestPropertySource(locations = {"classpath:/application-test.properties"})
     @ActiveProfiles("test")
     public static class GeekJokeSMSSourceTest {
+
         @Autowired
         private ApplicationContext applicationContext;
 
@@ -142,6 +148,33 @@ public class SMSSourceTest {
             Mockito.when(responseEntity.getStatusCode()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
             Mockito.when(this.mockRestTemplate.getForEntity(Mockito.anyString(), Mockito.any())).thenReturn(responseEntity);
             assertEquals("No geek joke for today :(", this.geekJokeSMSSource.getText());
+        }
+    }
+
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @ContextConfiguration(classes = {SMSSourceTestConfig.class})
+    @TestPropertySource(locations = {"classpath:/application-test.properties"})
+    @ActiveProfiles("test")
+    public static class DayOfMonthSMSSourceTest {
+
+        @Autowired
+        private ApplicationContext applicationContext;
+
+        private DayOfMonthSMSSource dayOfMonthSMSSource;
+
+        @Before
+        public void setupDateBasedSMSSourceTest() {
+            this.dayOfMonthSMSSource = this.applicationContext.getBean(DayOfMonthSMSSource.class);
+        }
+
+        @Test
+        public void testGetText_dateMatches() {
+            assertEquals("Hello World", new DayOfMonthSMSSource(LocalDate.now().getDayOfMonth(), "Hello World").getText());
+        }
+
+        @Test
+        public void testGetText_dateDoesNotMatch() {
+            assertNull(this.dayOfMonthSMSSource.getText());
         }
     }
 }

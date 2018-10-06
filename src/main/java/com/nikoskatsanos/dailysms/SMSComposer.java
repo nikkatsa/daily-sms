@@ -44,7 +44,7 @@ public class SMSComposer {
         if (Objects.nonNull(this.recipients)) {
             Stream.of(this.recipients).forEach(r -> {
                 try {
-                    final String msg = String.join(". ", this.smsSources.stream().map(SMSSource::getText).collect(Collectors.toList()));
+                    final String msg = String.join(". ", this.smsSources.stream().map(SMSSource::getText).filter(Objects::nonNull).collect(Collectors.toList()));
                     this.smsSender.sendSMS(msg, r);
                 } catch (final SMSSender.SMSException e) {
                     log.error("Error occurred while sending SMS to recipient=%s", r, e);
